@@ -13,7 +13,7 @@
           </form>
         </li>
         <li>
-          <a class="edit" href="/lists/{{ lst.id }}/edit">Edit List</a>
+          <a class="edit" href="{{ url_for('edit_list', list_id=lst.id) }}">Edit List</a>
         </li>
       </ul>
     </header>

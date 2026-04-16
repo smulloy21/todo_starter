@@ -144,5 +144,14 @@ def complete_all(list_id):
     return redirect(url_for('show_list', list_id=list_id))
 
 
+@app.route('/lists/<list_id>/edit')
+def edit_list(list_id):
+    lst = find_list_by_id(list_id, session['lists'])
+    if not lst:
+        raise NotFound(description="List not found")
+
+    return render_template('edit_list.html', lst=lst)
+
+
 if __name__ == "__main__":
     app.run(debug=True, port=5003)
