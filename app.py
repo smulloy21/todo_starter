@@ -11,7 +11,11 @@ from flask import  (
 )
 from werkzeug.exceptions import NotFound
 
-from todos.utils import error_for_list_title, find_list_by_id
+from todos.utils import (
+    error_for_list_title,
+    error_for_todo,
+    find_list_by_id,
+)
 
 
 app = Flask(__name__)
@@ -66,6 +70,28 @@ def show_list(list_id):
         raise NotFound(description="List not found")
 
     return render_template('list.html', lst=lst)
+
+
+@app.route("/lists/<list_id>/todos", methods=["POST"])
+def new_todo(list_id):
+    lst = find_list_by_id(list_id, session['lists'])
+    if not lst:
+        raise NotFound(description="List not found")
+
+    todo_title = request.form["todo"].strip()
+    error = error_for_todo(todo_title)
+    if error:
+        flash(error, "error")
+        return render_template('list.html', lst=lst)
+
+    lst['todos'].append({
+        'title': todo_title,
+        'completed': False,
+        'id': str(uuid4()),
+    })
+    flash("Todo created.", "success")
+    session.modified = True
+    return redirect(url_for('show_list', list_id=list_id))
 
 
 if __name__ == "__main__":
