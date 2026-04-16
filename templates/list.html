@@ -20,7 +20,7 @@
     <ul>
       {% for todo in lst.todos %}
         <li class="{{'complete' if todo.completed else ''}}">
-          <form action="/lists/{{ lst.id }}/todos/{{ todo.id }}/toggle"
+          <form action="{{ url_for('toggle_todo', list_id=lst.id, todo_id=todo.id) }}"
                 method="post" class="check">
             <input type="hidden" name="completed"
                   value="{{ not todo.completed }}" />
@@ -38,7 +38,7 @@
 
   </section>
 
-  <form action="/lists/{{ lst.id }}/todos" method="post">
+  <form action="{{ url_for('new_todo', list_id=lst.id) }}" method="post">
     <dl>
       <dt>
         <label for="todo">Enter a new todo item:</label>

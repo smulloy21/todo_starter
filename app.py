@@ -15,6 +15,7 @@ from todos.utils import (
     error_for_list_title,
     error_for_todo,
     find_list_by_id,
+    find_todo_by_id,
 )
 
 
@@ -90,6 +91,22 @@ def new_todo(list_id):
         'id': str(uuid4()),
     })
     flash("Todo created.", "success")
+    session.modified = True
+    return redirect(url_for('show_list', list_id=list_id))
+
+
+@app.route("/lists/<list_id>/todos/<todo_id>/toggle", methods=["POST"])
+def toggle_todo(list_id, todo_id):
+    lst = find_list_by_id(list_id, session['lists'])
+    if not lst:
+        raise NotFound(description="List not found")
+
+    todo = find_todo_by_id(todo_id, lst['todos'])
+    if not todo:
+        raise NotFound(description="Todo item not found")
+
+    todo['completed'] = (request.form['completed'] == 'True')
+    flash("The todo has been updated.", "success")
     session.modified = True
     return redirect(url_for('show_list', list_id=list_id))
 
