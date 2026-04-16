@@ -9,8 +9,8 @@ from flask import  (
     session,
     url_for,
 )
-
-from todos.utils import error_for_list_title
+from werkzeug.exceptions import NotFound
+from todos.utils import error_for_list_title, find_list_by_id
 
 app = Flask(__name__)
 app.secret_key='secret1'
@@ -47,6 +47,13 @@ def create_list():
     session.modified = True
     return redirect(url_for('get_lists'))
 
+@app.route("/lists/<list_id>")
+def show_list(list_id):
+    lst = find_list_by_id(list_id, session['lists'])
+    if not lst:
+        raise NotFound(description="List not found")
+
+    return render_template('list.html', lst=lst)
 
 @app.route("/lists/new")
 def add_todo_list():
