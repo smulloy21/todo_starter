@@ -90,6 +90,7 @@ def new_todo(list_id):
         'completed': False,
         'id': str(uuid4()),
     })
+
     flash("Todo created.", "success")
     session.modified = True
     return redirect(url_for('show_list', list_id=list_id))
@@ -106,6 +107,7 @@ def toggle_todo(list_id, todo_id):
         raise NotFound(description="Todo item not found")
 
     todo['completed'] = (request.form['completed'] == 'True')
+
     flash("The todo has been updated.", "success")
     session.modified = True
     return redirect(url_for('show_list', list_id=list_id))
@@ -122,7 +124,22 @@ def delete_todo(list_id, todo_id):
         raise NotFound(description="Todo item not found")
 
     lst['todos'].remove(todo)
+
     flash("The todo has been removed.", "success")
+    session.modified = True
+    return redirect(url_for('show_list', list_id=list_id))
+
+
+@app.route("/lists/<list_id>/complete_all", methods=["POST"])
+def complete_all(list_id):
+    lst = find_list_by_id(list_id, session['lists'])
+    if not lst:
+        raise NotFound(description="List not found")
+
+    for todo in lst['todos']:
+        todo['completed'] = True
+
+    flash("Your todo list is complete.", "success")
     session.modified = True
     return redirect(url_for('show_list', list_id=list_id))
 
