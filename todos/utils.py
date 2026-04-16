@@ -6,5 +6,6 @@ def error_for_list_title(title, lists):
     else:
         return None
 
+
 def find_list_by_id(list_id, lists):
     return next((lst for lst in lists if lst['id'] == list_id), None)
