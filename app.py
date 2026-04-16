@@ -166,5 +166,25 @@ def delete_list(list_id):
     return redirect(url_for('get_lists'))
 
 
+@app.route("/lists/<list_id>", methods=["POST"])
+def update_list(list_id):
+    lst = find_list_by_id(list_id, session['lists'])
+    if not lst:
+        raise NotFound(description="List not found")
+
+    title = request.form["list_title"].strip()
+
+    error = error_for_list_title(title, session['lists'])
+    if error:
+        flash(error, "error")
+        return render_template('edit_list.html', lst=lst, title=title)
+
+    lst['title'] = title
+
+    flash("List title has been updated.", 'success')
+    session.modified = True
+    return redirect(url_for('show_list', list_id=list_id))
+
+
 if __name__ == "__main__":
     app.run(debug=True, port=5003)
