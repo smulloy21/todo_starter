@@ -19,7 +19,6 @@ from todos.utils import (
     is_list_completed,
     is_todo_completed,
     sort_items,
-    todos_completed,
 )
 from todos.database_persistence import DatabasePersistence
 
@@ -45,7 +44,8 @@ def require_todo(f):
     @require_list
     def decorated_function(lst, *args, **kwargs):
         todo_id = kwargs.get('todo_id')
-        todo = next((t for t in lst['todos'] if t['id'] == todo_id), None)
+        todos = g.storage.find_todos_for_list(lst['id'])
+        todo = next((t for t in todos if t['id'] == todo_id), None)
         if not todo:
             raise NotFound(description="Todo not found")
         return f(lst=lst, todo=todo, *args, **kwargs)
@@ -74,8 +74,7 @@ def index():
 def get_lists():
     lists = sort_items(g.storage.all_lists(), is_list_completed)
     return render_template('lists.html',
-                           lists=lists,
-                           todos_completed=todos_completed)
+                           lists=lists)
 
 
 @app.route("/lists", methods=["POST"])

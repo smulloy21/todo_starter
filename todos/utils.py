@@ -14,11 +14,7 @@ def error_for_todo(todo):
 
 
 def is_list_completed(lst):
-    return len(lst['todos']) > 0 and todos_completed(lst) == len(lst['todos'])
-
-
-def todos_completed(lst):
-    return sum(1 for todo in lst['todos'] if todo['completed'])
+    return lst['todos_count'] > 0 and lst['todos_completed'] == lst['todos_count']
 
 
 def is_todo_completed(todo):
