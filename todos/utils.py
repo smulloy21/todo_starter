@@ -13,14 +13,6 @@ def error_for_todo(todo):
     return None
 
 
-def find_list_by_id(list_id, lists):
-    return next((lst for lst in lists if lst['id'] == list_id), None)
-
-
-def find_todo_by_id(todo_id, todos):
-    return next((todo for todo in todos if todo['id'] == todo_id), None)
-
-
 def is_list_completed(lst):
     return len(lst['todos']) > 0 and todos_completed(lst) == len(lst['todos'])
 
