@@ -10,7 +10,7 @@ logging.basicConfig(level=logging.INFO, format=LOG_FORMAT)
 logger = logging.getLogger(__name__)
 
 
-class DatabasePersistense():
+class DatabasePersistence():
     def __init__(self):
         self._setup_schema()
 
@@ -128,15 +128,6 @@ class DatabasePersistense():
         with self._database_connect() as conn:
             with conn.cursor() as cursor:
                 cursor.execute(query, (list_id, todo_id,))
-
-    def find_todo(self, list_id, todo_id):
-        query = "SELECT * FROM todos WHERE list_id = %s AND id = %s"
-        logger.info("Executing query: %s with list_id: %s and id: %s",
-                    query, list_id, todo_id)
-        with self._database_connect() as conn:
-            with conn.cursor(cursor_factory=DictCursor) as cursor:
-                cursor.execute(query, (list_id, todo_id))
-                return dict(cursor.fetchone())
 
     def mark_all_todos_completed(self, list_id):
         query = "UPDATE todos SET completed = TRUE WHERE list_id = %s"

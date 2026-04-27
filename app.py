@@ -21,7 +21,7 @@ from todos.utils import (
     sort_items,
     todos_completed,
 )
-from todos.database_persistence import DatabasePersistense
+from todos.database_persistence import DatabasePersistence
 
 
 app = Flask(__name__)
@@ -45,7 +45,7 @@ def require_todo(f):
     @require_list
     def decorated_function(lst, *args, **kwargs):
         todo_id = kwargs.get('todo_id')
-        todo = g.storage.find_todo(lst['id'], todo_id)
+        todo = next((t for t in lst['todos'] if t['id'] == todo_id), None)
         if not todo:
             raise NotFound(description="Todo not found")
         return f(lst=lst, todo=todo, *args, **kwargs)
@@ -62,7 +62,7 @@ def list_utilities_processor():
 
 @app.before_request
 def load_db():
-    g.storage = DatabasePersistense()
+    g.storage = DatabasePersistence()
 
 
 @app.route("/")
