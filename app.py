@@ -99,7 +99,9 @@ def add_todo_list():
 @app.route("/lists/<int:list_id>")
 @require_list
 def show_list(lst, list_id):
-    lst['todos'] = sort_items(lst['todos'], is_todo_completed)
+    lst = g.storage.find_list(list_id)
+    todos_for_list = g.storage.find_todos_for_list(list_id)
+    lst['todos'] = sort_items(todos_for_list, is_todo_completed)
     return render_template('list.html', lst=lst)
 
 

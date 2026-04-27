@@ -111,8 +111,6 @@ class DatabasePersistence():
                 cursor.execute(query, (list_id,))
                 lst = dict(cursor.fetchone())
 
-        todos = self.find_todos_for_list(list_id)
-        lst.setdefault('todos', todos)
         return lst
 
     def find_todos_for_list(self, list_id):
